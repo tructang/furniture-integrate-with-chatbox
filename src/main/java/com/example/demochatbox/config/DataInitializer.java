@@ -12,7 +12,9 @@ import com.example.demochatbox.model.ProductImage;
 import com.example.demochatbox.model.ProductStatus;
 import com.example.demochatbox.model.Review;
 import com.example.demochatbox.model.UserAccount;
+import com.example.demochatbox.model.UserRole;
 import com.example.demochatbox.repository.CartRepository;
+import com.example.demochatbox.repository.CategoryRepository;
 import com.example.demochatbox.repository.OrderRepository;
 import com.example.demochatbox.repository.ProductRepository;
 import com.example.demochatbox.repository.ReviewRepository;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Component;
 public class DataInitializer implements CommandLineRunner {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
     private final UserAccountRepository userAccountRepository;
     private final CartRepository cartRepository;
     private final ReviewRepository reviewRepository;
@@ -41,11 +44,25 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        userAccountRepository.findAll().stream()
+                .filter(existingUser -> existingUser.getRole() == null)
+                .forEach(existingUser -> {
+                    existingUser.setRole(UserRole.USER);
+                    userAccountRepository.save(existingUser);
+                });
+
         if (!seedEnabled || productRepository.count() > 0) {
             return;
         }
 
-        Product sofa = createProduct("sofa-vang-bac-au", "Sofa vang Bac Au", Category.SOFA,
+        Category sofaCategory = saveCategory("SOFA", "sofa", "Phong khach", "Sofa va noi that phong khach", 1);
+        Category tableCategory = saveCategory("TABLE", "ban-an", "Phong an", "Ban an va ghe cho khu vuc an uong", 2);
+        Category chairCategory = saveCategory("CHAIR", "ghe", "Ghe", "Ghe don, ghe thu gian, ghe lam viec", 3);
+        Category bedCategory = saveCategory("BED", "giuong", "Phong ngu", "Giuong va noi that phong ngu", 4);
+        Category cabinetCategory = saveCategory("CABINET", "tu-ke", "Luu tru", "Tu ao, tu ke va giai phap luu tru", 5);
+        saveCategory("DECOR", "trang-tri", "Trang tri", "Do trang tri va phu kien", 6);
+
+        Product sofa = createProduct("sofa-vang-bac-au", "Sofa vang Bac Au", sofaCategory,
                 bd("25900000"), bd("21900000"), "Vai cao cap", "Kem", "220x90cm",
                 220.0, 90.0, 85.0, 15, true,
                 "Sofa phong cach toi gian, de ket hop voi tham long ngan va den cay mau dong.",
@@ -54,7 +71,7 @@ public class DataInitializer implements CommandLineRunner {
                 "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
                 "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e");
 
-        Product table = createProduct("ban-an-go-oc-cho", "Ban an go oc cho", Category.TABLE,
+        Product table = createProduct("ban-an-go-oc-cho", "Ban an go oc cho", tableCategory,
                 bd("18900000"), bd("16900000"), "Go oc cho", "Nau dam", "180x90cm",
                 180.0, 90.0, 75.0, 10, false,
                 "Ban an 6 ghe, mat go day, phu hop can ho va nha pho hien dai.",
@@ -63,7 +80,7 @@ public class DataInitializer implements CommandLineRunner {
                 "https://images.unsplash.com/photo-1505409628601-edc9af17fda6",
                 "https://images.unsplash.com/photo-1484154218962-a197022b5858");
 
-        Product chair = createProduct("ghe-thu-gian-go", "Ghe thu gian go", Category.CHAIR,
+        Product chair = createProduct("ghe-thu-gian-go", "Ghe thu gian go", chairCategory,
                 bd("6900000"), null, "Go soi", "Xam", "Don",
                 78.0, 82.0, 74.0, 24, false,
                 "Ghe don tua lung thap, hop goc doc sach hoac ban cong co mai che.",
@@ -71,7 +88,7 @@ public class DataInitializer implements CommandLineRunner {
         addImages(chair,
                 "https://images.unsplash.com/photo-1519947486511-46149fa0a254");
 
-        Product bed = createProduct("giuong-hop-go-sang", "Giuong hop go sang", Category.BED,
+        Product bed = createProduct("giuong-hop-go-sang", "Giuong hop go sang", bedCategory,
                 bd("22900000"), bd("19900000"), "Go soi", "Nau sang", "1m8 x 2m",
                 180.0, 200.0, 110.0, 8, false,
                 "Giuong hop dau giuong boc vai, co ngan keo luu tru ben duoi.",
@@ -80,7 +97,7 @@ public class DataInitializer implements CommandLineRunner {
                 "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?bed",
                 "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?bed2");
 
-        Product cabinet = createProduct("tu-ao-can-lua", "Tu ao can lua", Category.CABINET,
+        Product cabinet = createProduct("tu-ao-can-lua", "Tu ao can lua", cabinetCategory,
                 bd("27900000"), bd("24900000"), "Go cong nghiep chong am", "Trang sua", "240x60cm",
                 240.0, 60.0, 220.0, 5, false,
                 "Tu can lua tiet kiem dien tich, bo tri ngan treo va ngan keo theo nhu cau.",
@@ -95,7 +112,16 @@ public class DataInitializer implements CommandLineRunner {
         user.setEmail("demo@noithat.vn");
         user.setPasswordHash(passwordEncoder.encode("123456"));
         user.setPhone("0909000999");
+        user.setRole(UserRole.USER);
         user = userAccountRepository.save(user);
+
+        UserAccount admin = new UserAccount();
+        admin.setFullName("System Admin");
+        admin.setEmail("admin@noithat.vn");
+        admin.setPasswordHash(passwordEncoder.encode("admin123"));
+        admin.setPhone("0909000000");
+        admin.setRole(UserRole.ADMIN);
+        userAccountRepository.save(admin);
 
         Address address = new Address();
         address.setUser(user);
@@ -159,6 +185,16 @@ public class DataInitializer implements CommandLineRunner {
         product.setDescription(description);
         product.setComboSuggestion(comboSuggestion);
         return product;
+    }
+
+    private Category saveCategory(String code, String slug, String name, String description, int sortOrder) {
+        Category category = new Category();
+        category.setCode(code);
+        category.setSlug(slug);
+        category.setName(name);
+        category.setDescription(description);
+        category.setSortOrder(sortOrder);
+        return categoryRepository.save(category);
     }
 
     private void addImages(Product product, String... urls) {

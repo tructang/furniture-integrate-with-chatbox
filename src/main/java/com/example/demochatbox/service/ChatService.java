@@ -63,7 +63,10 @@ public class ChatService {
         if (lower.contains("giuong")) {
             return "Voi phong ngu chuan, giuong go 1m6 x 2m ket hop tu dau giuong va den vang am la lua chon an toan.";
         }
-        List<Product> matches = productRepository.search(message, null, null, null, null, null, null);
+        List<Product> matches = productRepository.findAll((root, query, criteriaBuilder) -> criteriaBuilder.or(
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + lower + "%"),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + lower + "%")
+        ));
         if (!matches.isEmpty()) {
             Product product = matches.get(0);
             return "San pham phu hop hien co la " + product.getName() + ", gia uu dai " +

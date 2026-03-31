@@ -5,10 +5,16 @@ import com.example.demochatbox.dto.AuthDtos.RegisterRequest;
 import com.example.demochatbox.dto.AuthDtos.UserResponse;
 import com.example.demochatbox.model.Cart;
 import com.example.demochatbox.model.UserAccount;
+import com.example.demochatbox.model.UserRole;
 import com.example.demochatbox.repository.CartRepository;
 import com.example.demochatbox.repository.UserAccountRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +27,7 @@ public class AuthService {
     private final UserAccountRepository userAccountRepository;
     private final CartRepository cartRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public UserResponse register(RegisterRequest request) {
@@ -32,6 +39,7 @@ public class AuthService {
         user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setPhone(request.phone());
+        user.setRole(UserRole.USER);
         UserAccount savedUser = userAccountRepository.save(user);
 
         Cart cart = new Cart();
@@ -41,11 +49,16 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse login(LoginRequest request) {
-        UserAccount user = userAccountRepository.findByEmailIgnoreCase(request.email())
-                .filter(found -> passwordEncoder.matches(request.password(), found.getPasswordHash()))
+    public UserResponse login(LoginRequest request, HttpServletRequest httpServletRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken.unauthenticated(request.email(), request.password())
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        httpServletRequest.getSession(true)
+                .setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+        return userAccountRepository.findByEmailIgnoreCase(request.email())
+                .map(this::toResponse)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Thong tin dang nhap khong hop le"));
-        return toResponse(user);
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +68,6 @@ public class AuthService {
     }
 
     private UserResponse toResponse(UserAccount user) {
-        return new UserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhone());
+        return new UserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhone(), user.getRole());
     }
 }

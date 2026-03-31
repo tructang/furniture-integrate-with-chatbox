@@ -1,6 +1,5 @@
 package com.example.demochatbox.dto;
 
-import com.example.demochatbox.model.Category;
 import com.example.demochatbox.model.ProductStatus;
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,7 +13,8 @@ public final class CatalogDtos {
             Long id,
             String slug,
             String name,
-            Category category,
+            String categoryCode,
+            String categoryName,
             BigDecimal price,
             BigDecimal promotionPrice,
             String material,
@@ -29,7 +29,8 @@ public final class CatalogDtos {
             Long id,
             String slug,
             String name,
-            Category category,
+            String categoryCode,
+            String categoryName,
             BigDecimal price,
             BigDecimal promotionPrice,
             String material,
@@ -45,6 +46,14 @@ public final class CatalogDtos {
             String comboSuggestion,
             Double averageRating,
             List<String> images
+    ) {
+    }
+
+    public record CategoryResponse(
+            String code,
+            String slug,
+            String name,
+            String description
     ) {
     }
 }

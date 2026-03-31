@@ -46,6 +46,12 @@ public class AddressService {
         return toResponse(addressRepository.save(address));
     }
 
+    @Transactional
+    public AddressResponse save(Long userId, AddressRequest request) {
+        return save(new AddressRequest(userId, request.recipientName(), request.phone(), request.line1(),
+                request.district(), request.city(), request.defaultAddress()));
+    }
+
     private AddressResponse toResponse(Address address) {
         return new AddressResponse(address.getId(), address.getRecipientName(), address.getPhone(), address.getLine1(),
                 address.getDistrict(), address.getCity(), address.isDefaultAddress());

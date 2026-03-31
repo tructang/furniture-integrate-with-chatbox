@@ -1,5 +1,6 @@
 package com.example.demochatbox.dto;
 
+import com.example.demochatbox.model.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -22,6 +23,6 @@ public final class AuthDtos {
     ) {
     }
 
-    public record UserResponse(Long id, String fullName, String email, String phone) {
+    public record UserResponse(Long id, String fullName, String email, String phone, UserRole role) {
     }
 }
