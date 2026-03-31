@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.name}">Chi tiet san pham</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/site.css}">
+</head>
+<body class="detail-page">
+<a class="back-link" href="/">Quay lai catalog</a>
+<main class="detail-layout">
+    <section>
+        <img class="hero-image" th:src="${product.images[0]}" th:alt="${product.name}">
+        <div class="thumbs">
+            <img th:each="image : ${product.images}" th:src="${image}" th:alt="${product.name}">
+        </div>
+    </section>
+    <section class="detail-card">
+        <p class="eyebrow" th:text="${product.category}"></p>
+        <h1 th:text="${product.name}"></h1>
+        <div class="price">
+            <strong th:text="${#numbers.formatDecimal(product.promotionPrice != null ? product.promotionPrice : product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></strong>
+            <span th:if="${product.promotionPrice != null}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
+        </div>
+        <p th:text="${product.description}"></p>
+        <div class="spec-grid">
+            <div><span>Chat lieu</span><strong th:text="${product.material}"></strong></div>
+            <div><span>Mau sac</span><strong th:text="${product.color}"></strong></div>
+            <div><span>Kich thuoc</span><strong th:text="${product.sizeLabel}"></strong></div>
+            <div><span>Kich co chi tiet</span><strong th:text="${product.lengthCm + ' x ' + product.widthCm + ' x ' + product.heightCm + ' cm'}"></strong></div>
+            <div><span>Ton kho</span><strong th:text="${product.stockQuantity}"></strong></div>
+            <div><span>Danh gia</span><strong th:text="${product.averageRating}"></strong></div>
+        </div>
+        <div class="feature-box">
+            <h3>Goi y combo</h3>
+            <p th:text="${product.comboSuggestion}"></p>
+        </div>
+        <div class="feature-box" th:if="${product.arEnabled}">
+            <h3>AR Demo</h3>
+            <p>San pham nay da san sang cho tinh nang xem trong khong gian bang camera.</p>
+        </div>
+    </section>
+</main>
+
+<section class="reviews">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Danh gia</p>
+            <h2>Phan hoi tu khach hang</h2>
+        </div>
+    </div>
+    <div class="review-grid">
+        <article class="feature-box" th:each="review : ${reviews}">
+            <strong th:text="${review.userName}"></strong>
+            <span th:text="${review.rating + ' sao'}"></span>
+            <p th:text="${review.comment}"></p>
+            <img th:if="${review.imageUrl != null}" th:src="${review.imageUrl}" th:alt="${review.userName}">
+        </article>
+    </div>
+</section>
+</body>
+</html>

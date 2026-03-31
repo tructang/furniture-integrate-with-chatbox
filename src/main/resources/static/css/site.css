@@ -1,0 +1,279 @@
+:root {
+    --bg: #f4efe7;
+    --surface: rgba(255, 250, 244, 0.9);
+    --ink: #23180d;
+    --muted: #6d5b4b;
+    --accent: #a95b32;
+    --accent-dark: #7b3c1c;
+    --line: rgba(35, 24, 13, 0.12);
+    --shadow: 0 18px 50px rgba(67, 41, 20, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Be Vietnam Pro", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at top left, rgba(169, 91, 50, 0.22), transparent 28%),
+        linear-gradient(180deg, #f8f3ee 0%, var(--bg) 100%);
+}
+
+img {
+    display: block;
+    width: 100%;
+    border-radius: 24px;
+    object-fit: cover;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.hero,
+.layout,
+.split,
+.detail-layout,
+.reviews {
+    width: min(1200px, calc(100% - 32px));
+    margin: 0 auto;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+    padding: 32px 0 24px;
+}
+
+.hero__content,
+.hero__panel,
+.filters,
+.card,
+.detail-card,
+.feature-box,
+.review-grid article {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+}
+
+.hero__content {
+    padding: 36px;
+}
+
+.hero__content h1,
+.detail-card h1 {
+    font-size: clamp(2.2rem, 5vw, 4.4rem);
+    line-height: 0.98;
+    margin: 0 0 16px;
+}
+
+.hero__panel {
+    padding: 24px;
+    display: grid;
+    gap: 16px;
+    align-content: start;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.78rem;
+    color: var(--accent-dark);
+    font-weight: 700;
+}
+
+.search-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.search-bar input,
+.search-bar button {
+    border-radius: 999px;
+    border: 0;
+    padding: 14px 18px;
+    font: inherit;
+}
+
+.search-bar input {
+    flex: 1;
+    background: #fff;
+}
+
+.search-bar button,
+.button-secondary {
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    padding-bottom: 24px;
+}
+
+.filters,
+.detail-card {
+    padding: 24px;
+}
+
+.chip-grid,
+.spec-grid,
+.review-grid,
+.thumbs {
+    display: grid;
+    gap: 12px;
+}
+
+.chip-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.chip {
+    display: inline-flex;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #fff;
+    justify-content: center;
+}
+
+.catalog {
+    padding: 12px 0 24px;
+}
+
+.section-head,
+.price,
+.card__meta,
+.split {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    overflow: hidden;
+}
+
+.card img,
+.hero-image {
+    aspect-ratio: 4 / 3;
+}
+
+.card__body {
+    padding: 18px;
+}
+
+.card__meta,
+.detail-card p,
+.feature-box p,
+.split ul,
+.back-link,
+.price span {
+    color: var(--muted);
+}
+
+.price {
+    align-items: center;
+}
+
+.price strong {
+    font-size: 1.35rem;
+}
+
+.price span {
+    text-decoration: line-through;
+}
+
+.split {
+    align-items: start;
+    padding: 12px 0 40px;
+}
+
+.detail-page {
+    padding: 20px 0 32px;
+}
+
+.back-link {
+    display: block;
+    width: min(1200px, calc(100% - 32px));
+    margin: 0 auto 16px;
+}
+
+.detail-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+}
+
+.thumbs {
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 12px;
+}
+
+.thumbs img,
+.review-grid img {
+    aspect-ratio: 1 / 1;
+}
+
+.spec-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 18px 0;
+}
+
+.spec-grid div {
+    background: #fff;
+    border-radius: 18px;
+    padding: 14px;
+}
+
+.spec-grid span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+
+.reviews {
+    padding-top: 24px;
+}
+
+.review-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 16px;
+}
+
+.review-grid article {
+    padding: 18px;
+}
+
+@media (max-width: 900px) {
+    .hero,
+    .layout,
+    .detail-layout,
+    .split {
+        grid-template-columns: 1fr;
+    }
+
+    .search-bar,
+    .section-head,
+    .price {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

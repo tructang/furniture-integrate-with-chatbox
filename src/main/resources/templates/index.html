@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noi That Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/site.css}">
+</head>
+<body>
+<header class="hero">
+    <div class="hero__content">
+        <p class="eyebrow">Noi that hien dai</p>
+        <h1>Website ban noi that Java + PostgreSQL co chatbox ho tro 24/7</h1>
+        <p>Catalog theo danh muc, loc theo gia, chat lieu, mau sac, kich thuoc; co gio hang, don hang, review va goi y thong minh.</p>
+        <form method="get" action="/" class="search-bar">
+            <input type="text" name="keyword" placeholder="Tim sofa, ban an, tu quan ao...">
+            <button type="submit">Tim san pham</button>
+        </form>
+    </div>
+    <div class="hero__panel">
+        <div class="stat">
+            <strong>AR Ready</strong>
+            <span>Demo xem san pham trong khong gian</span>
+        </div>
+        <div class="stat">
+            <strong>Chatbox AI</strong>
+            <span>Tu van phong cach va ngan sach</span>
+        </div>
+        <div class="stat">
+            <strong>Admin</strong>
+            <span>Quan ly don hang, doanh thu, san pham ban chay</span>
+        </div>
+    </div>
+</header>
+
+<main class="layout">
+    <aside class="filters">
+        <h2>Danh muc</h2>
+        <div class="chip-grid">
+            <a class="chip" th:href="@{/}">Tat ca</a>
+            <a class="chip" th:each="category : ${categories}" th:href="@{/(category=${category})}" th:text="${category}"></a>
+        </div>
+        <div class="feature-box">
+            <h3>Thanh toan</h3>
+            <p>COD, chuyen khoan, Momo, ZaloPay</p>
+        </div>
+        <div class="feature-box">
+            <h3>Marketing</h3>
+            <p>Khuyen mai, ma giam gia, flash sale, nhac gio hang qua email</p>
+        </div>
+    </aside>
+
+    <section class="catalog">
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">San pham noi bat</p>
+                <h2>Bo suu tap noi that</h2>
+            </div>
+            <a href="/api/products" class="link-action">Xem API</a>
+        </div>
+        <div class="product-grid">
+            <article class="card" th:each="product : ${products}">
+                <img th:src="${product.primaryImage}" th:alt="${product.name}">
+                <div class="card__body">
+                    <div class="card__meta">
+                        <span th:text="${product.category}"></span>
+                        <span th:text="${product.status}"></span>
+                    </div>
+                    <h3 th:text="${product.name}"></h3>
+                    <p th:text="${product.material + ' / ' + product.color + ' / ' + product.sizeLabel}"></p>
+                    <div class="price">
+                        <strong th:text="${#numbers.formatDecimal(product.promotionPrice != null ? product.promotionPrice : product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></strong>
+                        <span th:if="${product.promotionPrice != null}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
+                    </div>
+                    <a class="button-secondary" th:href="@{/products/{slug}(slug=${product.slug})}">Xem chi tiet</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<section class="split">
+    <div>
+        <p class="eyebrow">Tinh nang nang cao</p>
+        <h2>Phu hop bai toan ban noi that thuc te</h2>
+    </div>
+    <ul>
+        <li>Goi y combo noi that theo khong gian phong</li>
+        <li>Theo doi don hang: dang xu ly, dang giao, da giao</li>
+        <li>Khach hang co the de lai review kem hinh anh thuc te</li>
+    </ul>
+</section>
+</body>
+</html>
